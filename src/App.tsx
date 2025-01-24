@@ -18,13 +18,17 @@ export const App: React.FC = () => {
   const [selectedTodo, setSelectedTodo] = useState<Todo | null>(null);
   const [selectedUser, setSelectedUser] = useState<User | null>(null);
   const [selectedTodoId, setSelectedTodoId] = useState<number | null>(null);
-  const [status, setStatus] = useState<string>('All');
+  const [status, setStatus] = useState<'all' | 'active' | 'completed'>('all');
 
   useEffect(() => {
     setIsLoading(true);
 
     getTodos()
       .then(setTodos)
+      .catch(error => {
+        /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+        console.error('Error fetching todos:', error);
+      })
       .finally(() => setIsLoading(false));
   }, []);
 
@@ -33,6 +37,10 @@ export const App: React.FC = () => {
       setIsLoading(true);
       getUser(selectedTodo.userId)
         .then(setSelectedUser)
+        .catch(error => {
+          /* eslint no-console: ["error", { allow: ["warn", "error"] }] */
+          console.error('Error fetching user:', error);
+        })
         .finally(() => setIsLoading(false));
     } else {
       setSelectedUser(null);
